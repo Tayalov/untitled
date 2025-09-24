@@ -82,7 +82,7 @@ The experiments were run on randomly generated input arrays and point sets of in
 
 Below are the plots comparing the performance of different algorithms:
 
-![Performance Graph](results.png)
+![sort.png](../../../../../../Pictures/Screenshots/sort.png)
 
 
 ## 5. Results and Conclusions

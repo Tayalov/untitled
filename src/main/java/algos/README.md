@@ -82,7 +82,7 @@ The experiments were run on randomly generated input arrays and point sets of in
 
 Below are the plots comparing the performance of different algorithms:
 
-![sort.png](../../../../../../Pictures/Screenshots/sort.png)
+![Performance Graph](results.png)
 
 
 ## 5. Results and Conclusions
@@ -95,3 +95,4 @@ Below are the plots comparing the performance of different algorithms:
 **Conclusion:** The theoretical recurrence relations match the experimental data. Divide-and-conquer algorithms demonstrate efficiency but are highly dependent on recursion structure and base case optimization.
 
 
+![img.png](img.png)

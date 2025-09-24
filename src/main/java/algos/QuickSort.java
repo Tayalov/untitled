@@ -1,10 +1,13 @@
 package algos;
+
+import util.Metrics;
+
 public class QuickSort {
     private static final int CUTOFF = 16;
 
     public static void sort(int[] a, Metrics m) {
         if (a == null || a.length < 2) return;
-        Utils.shuffle(a); // randomize input to avoid adversarial cases
+        Utils.shuffle(a);
         quickIter(a, 0, a.length - 1, m);
     }
 
@@ -22,10 +25,14 @@ public class QuickSort {
             int leftSize = p - lo;
             int rightSize = hi - p;
             if (leftSize < rightSize) {
-                m.enter(); quickIter(a, lo, p - 1, m); m.exit();
+                if (m != null) m.enter();
+                quickIter(a, lo, p - 1, m);
+                if (m != null) m.exit();
                 lo = p + 1;
             } else {
-                m.enter(); quickIter(a, p + 1, hi, m); m.exit();
+                if (m != null) m.enter();
+                quickIter(a, p + 1, hi, m);
+                if (m != null) m.exit();
                 hi = p - 1;
             }
         }
@@ -35,8 +42,11 @@ public class QuickSort {
         int pivot = a[hi];
         int i = lo;
         for (int j = lo; j < hi; j++) {
-            m.incComparisons();
-            if (a[j] < pivot) { Utils.swap(a, i, j); i++; }
+            if (m != null) m.incComparisons();
+            if (a[j] < pivot) {
+                Utils.swap(a, i, j);
+                i++;
+            }
         }
         Utils.swap(a, i, hi);
         return i;

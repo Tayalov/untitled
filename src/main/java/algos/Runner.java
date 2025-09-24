@@ -1,7 +1,9 @@
 package algos;
 
+import util.Metrics;
 import java.util.Random;
 import java.util.Arrays;
+
 public class Runner {
     public static void main(String[] args) {
         String algo = "all";
@@ -21,58 +23,58 @@ public class Runner {
         Random rnd = new Random(42);
 
         try (CSVWriter csv = new CSVWriter(out)) {
-            Metrics m = new Metrics();
-
             for (int t = 0; t < trials; t++) {
-                // generate array with duplicates
                 int[] base = new int[n];
                 for (int i = 0; i < n; i++) base[i] = rnd.nextInt(Math.max(1, n / 2));
 
                 if (algo.equals("mergesort") || algo.equals("all")) {
                     int[] a = Utils.copy(base);
-                    m.reset(); long st = System.currentTimeMillis();
+                    Metrics m = new Metrics(); m.reset();
+                    long st = System.currentTimeMillis();
                     MergeSort.sort(a, m);
                     long time = System.currentTimeMillis() - st;
-                    if (!Utils.isSorted(a)) throw new RuntimeException("MergeSort failed");
+                    if (!isSorted(a)) throw new RuntimeException("MergeSort failed");
                     csv.append("mergesort", n, time, m);
-                    System.out.printf("mergesort n=%d time=%.3fms depth=%d comps=%d allocs=%d%n",
-                            n, time/1.0, m.maxDepth, m.comparisons, m.allocations);
+                    System.out.printf("mergesort n=%d time=%dms depth=%d comps=%d allocs=%d%n",
+                            n, time, m.getMaxDepth(), m.getComparisons(), m.getAllocations());
                 }
 
                 if (algo.equals("quicksort") || algo.equals("all")) {
                     int[] a = Utils.copy(base);
-                    m.reset(); long st = System.currentTimeMillis();
+                    Metrics m = new Metrics(); m.reset();
+                    long st = System.currentTimeMillis();
                     QuickSort.sort(a, m);
                     long time = System.currentTimeMillis() - st;
-                    if (!Utils.isSorted(a)) throw new RuntimeException("QuickSort failed");
+                    if (!isSorted(a)) throw new RuntimeException("QuickSort failed");
                     csv.append("quicksort", n, time, m);
-                    System.out.printf("quicksort n=%d time=%.3fms depth=%d comps=%d allocs=%d%n",
-                            n, time/1.0, m.maxDepth, m.comparisons, m.allocations);
+                    System.out.printf("quicksort n=%d time=%dms depth=%d comps=%d allocs=%d%n",
+                            n, time, m.getMaxDepth(), m.getComparisons(), m.getAllocations());
                 }
 
                 if (algo.equals("select") || algo.equals("all")) {
                     int[] a = Utils.copy(base);
-                    m.reset(); long st = System.currentTimeMillis();
+                    Metrics m = new Metrics(); m.reset();
                     int k = a.length / 2;
+                    long st = System.currentTimeMillis();
                     int val = DeterministicSelect.select(a, k, m);
                     long time = System.currentTimeMillis() - st;
                     int[] b = Utils.copy(base); Arrays.sort(b);
                     if (b[k] != val) throw new RuntimeException("Select incorrect");
                     csv.append("select", n, time, m);
-                    System.out.printf("select n=%d time=%.3fms depth=%d comps=%d allocs=%d%n",
-                            n, time/1.0, m.maxDepth, m.comparisons, m.allocations);
+                    System.out.printf("select n=%d time=%dms depth=%d comps=%d allocs=%d%n",
+                            n, time, m.getMaxDepth(), m.getComparisons(), m.getAllocations());
                 }
 
                 if (algo.equals("closest") || algo.equals("all")) {
                     Point[] pts = new Point[n];
                     for (int i = 0; i < n; i++) pts[i] = new Point(rnd.nextDouble()*n, rnd.nextDouble()*n);
-                    m.reset(); long st = System.currentTimeMillis();
+                    Metrics m = new Metrics(); m.reset();
+                    long st = System.currentTimeMillis();
                     double d = ClosestPair.closestPairDistance(pts, m);
                     long time = System.currentTimeMillis() - st;
-                    // correctness: for small n one could compare with brute force; here just output
                     csv.append("closest", n, time, m);
-                    System.out.printf("closest n=%d time=%.3fms d=%.6f depth=%d%n",
-                            n, time/1.0, d, m.maxDepth);
+                    System.out.printf("closest n=%d time=%dms d=%.6f depth=%d comps=%d allocs=%d%n",
+                            n, time, d, m.getMaxDepth(), m.getComparisons(), m.getAllocations());
                 }
             }
 
@@ -81,4 +83,10 @@ public class Runner {
             e.printStackTrace();
         }
     }
+
+    private static boolean isSorted(int[] a) {
+        for (int i = 1; i < a.length; i++) if (a[i-1] > a[i]) return false;
+        return true;
+    }
 }
+

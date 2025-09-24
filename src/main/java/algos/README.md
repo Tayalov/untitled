@@ -97,4 +97,6 @@ Below are the plots comparing the performance of different algorithms:
 
 **Conclusion:** The theoretical recurrence relations match the experimental data. Divide-and-conquer algorithms demonstrate efficiency but are highly dependent on recursion structure and base case optimization.
 
+<img width="1801" height="453" alt="image" src="https://github.com/user-attachments/assets/ccfc5e2f-ebe9-4cec-843f-331d62d226c4" />
+
 

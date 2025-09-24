@@ -83,6 +83,8 @@ The experiments were run on randomly generated input arrays and point sets of in
 Below are the plots comparing the performance of different algorithms:
 
 ![sort.png](../../../../../../Pictures/Screenshots/sort.png)
+<img width="899" height="261" alt="sort" src="https://github.com/user-attachments/assets/d2969973-f450-41de-bafc-a9d423fb8024" />
+
 
 
 

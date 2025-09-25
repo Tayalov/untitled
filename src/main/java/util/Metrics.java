@@ -1,36 +1,36 @@
 package util;
 
-/**
- * Simple instance-based metrics collector.
- * Create a new Metrics() for each run and pass to algorithms.
- */
 public class Metrics {
-    private long comparisons = 0;
-    private long allocations = 0;
-    private int currentDepth = 0;
-    private int maxDepth = 0;
+    private static long startTime;
+    private static int depth;
+    private static int maxDepth;
+    private static int comparisons;
+    private static int allocations;
 
-    public void reset() {
+    public static void reset() {
+        startTime = System.currentTimeMillis();
+        depth = 0;
+        maxDepth = 0;
         comparisons = 0;
         allocations = 0;
-        currentDepth = 0;
-        maxDepth = 0;
     }
 
-    public void incComparisons() { comparisons++; }
-    public void incAllocations(long x) { allocations += x; }
-
-    public void enter() {
-        currentDepth++;
-        if (currentDepth > maxDepth) maxDepth = currentDepth;
+    public static void enter() {
+        depth++;
+        if (depth > maxDepth) maxDepth = depth;
     }
 
-    public void exit() {
-        currentDepth--;
-        if (currentDepth < 0) currentDepth = 0;
+    public static void exit() {
+        depth--;
     }
 
-    public long getComparisons() { return comparisons; }
-    public long getAllocations() { return allocations; }
-    public int getMaxDepth() { return maxDepth; }
+    public static void incComparisons() { comparisons++; }
+    public static void incAllocations() { allocations++; }
+    public static void incAllocations(int n) { allocations += n; }
+
+    public static long getTime() { return System.currentTimeMillis() - startTime; }
+    public static int getDepth() { return maxDepth; }
+    public static int getComparisons() { return comparisons; }
+    public static int getAllocations() { return allocations; }
 }
+

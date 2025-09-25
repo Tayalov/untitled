@@ -3,42 +3,35 @@ package algos;
 import util.Metrics;
 
 public class MergeSort {
-    private static final int CUTOFF = 16;
 
-    public static void sort(int[] a, Metrics m) {
-        if (a == null || a.length < 2) return;
-        int[] buffer = new int[a.length];
-        if (m != null) m.incAllocations(a.length);
-        mergeSort(a, buffer, 0, a.length - 1, m);
+    public static void sort(int[] arr, int left, int right) {
+        Metrics.enter();
+        if (left < right) {
+            int mid = (left + right) / 2;
+            sort(arr, left, mid);
+            sort(arr, mid + 1, right);
+            merge(arr, left, mid, right);
+        }
+        Metrics.exit();
     }
 
-    private static void mergeSort(int[] a, int[] buf, int lo, int hi, Metrics m) {
-        if (hi - lo <= CUTOFF) {
-            Utils.insertionSort(a, lo, hi, m);
-            return;
+    private static void merge(int[] arr, int left, int mid, int right) {
+        int n1 = mid - left + 1;
+        int n2 = right - mid;
+        int[] L = new int[n1];
+        int[] R = new int[n2];
+        Metrics.incAllocations(n1 + n2);
+
+        for (int i = 0; i < n1; i++) L[i] = arr[left + i];
+        for (int j = 0; j < n2; j++) R[j] = arr[mid + 1 + j];
+
+        int i = 0, j = 0, k = left;
+        while (i < n1 && j < n2) {
+            Metrics.incComparisons();
+            if (L[i] <= R[j]) arr[k++] = L[i++];
+            else arr[k++] = R[j++];
         }
-        int mid = lo + (hi - lo) / 2;
-        if (m != null) m.enter();
-        mergeSort(a, buf, lo, mid, m);
-        if (m != null) m.exit();
-
-        if (m != null) m.enter();
-        mergeSort(a, buf, mid + 1, hi, m);
-        if (m != null) m.exit();
-
-        // optimization: if already ordered, skip merge
-        if (a[mid] <= a[mid + 1]) return;
-        merge(a, buf, lo, mid, hi, m);
-    }
-
-    private static void merge(int[] a, int[] buf, int lo, int mid, int hi, Metrics m) {
-        System.arraycopy(a, lo, buf, lo, hi - lo + 1);
-        int i = lo, j = mid + 1, k = lo;
-        while (i <= mid && j <= hi) {
-            if (m != null) m.incComparisons();
-            if (buf[i] <= buf[j]) a[k++] = buf[i++];
-            else a[k++] = buf[j++];
-        }
-        while (i <= mid) a[k++] = buf[i++];
+        while (i < n1) arr[k++] = L[i++];
+        while (j < n2) arr[k++] = R[j++];
     }
 }

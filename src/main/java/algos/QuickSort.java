@@ -3,52 +3,29 @@ package algos;
 import util.Metrics;
 
 public class QuickSort {
-    private static final int CUTOFF = 16;
 
-    public static void sort(int[] a, Metrics m) {
-        if (a == null || a.length < 2) return;
-        Utils.shuffle(a);
-        quickIter(a, 0, a.length - 1, m);
-    }
-
-    private static void quickIter(int[] a, int lo, int hi, Metrics m) {
-        while (lo < hi) {
-            if (hi - lo <= CUTOFF) {
-                Utils.insertionSort(a, lo, hi, m);
-                break;
-            }
-
-            int pivotIndex = Utils.randomPivot(lo, hi);
-            Utils.swap(a, pivotIndex, hi);
-            int p = partition(a, lo, hi, m);
-
-            int leftSize = p - lo;
-            int rightSize = hi - p;
-            if (leftSize < rightSize) {
-                if (m != null) m.enter();
-                quickIter(a, lo, p - 1, m);
-                if (m != null) m.exit();
-                lo = p + 1;
-            } else {
-                if (m != null) m.enter();
-                quickIter(a, p + 1, hi, m);
-                if (m != null) m.exit();
-                hi = p - 1;
-            }
+    public static void sort(int[] arr, int low, int high) {
+        Metrics.enter();
+        if (low < high) {
+            int pi = partition(arr, low, high);
+            sort(arr, low, pi - 1);
+            sort(arr, pi + 1, high);
         }
+        Metrics.exit();
     }
 
-    private static int partition(int[] a, int lo, int hi, Metrics m) {
-        int pivot = a[hi];
-        int i = lo;
-        for (int j = lo; j < hi; j++) {
-            if (m != null) m.incComparisons();
-            if (a[j] < pivot) {
-                Utils.swap(a, i, j);
+    private static int partition(int[] arr, int low, int high) {
+        int pivot = arr[high];
+        Metrics.incAllocations();
+        int i = low - 1;
+        for (int j = low; j < high; j++) {
+            Metrics.incComparisons();
+            if (arr[j] <= pivot) {
                 i++;
+                int temp = arr[i]; arr[i] = arr[j]; arr[j] = temp;
             }
         }
-        Utils.swap(a, i, hi);
-        return i;
+        int temp = arr[i + 1]; arr[i + 1] = arr[high]; arr[high] = temp;
+        return i + 1;
     }
 }

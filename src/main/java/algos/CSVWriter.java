@@ -2,22 +2,28 @@ package algos;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import util.Metrics;
+import java.io.PrintWriter;
 
-public class CSVWriter implements AutoCloseable {
-    private final FileWriter w;
-    public CSVWriter(String path) throws IOException {
-        w = new FileWriter(path);
-        w.write("algo,n,timeMs,maxDepth,comparisons,allocs\n");
+public class CSVWriter {
+    private final PrintWriter pw;
+
+    public CSVWriter(String filename) throws IOException {
+        pw = new PrintWriter(new FileWriter(filename, true));
+        pw.println("Algorithm,Size,Comparisons,Allocations,MaxDepth");
     }
-    public void append(String algo, int n, long timeMs, Metrics m) throws IOException {
-        long comps = m == null ? 0 : m.getComparisons();
-        long allocs = m == null ? 0 : m.getAllocations();
-        int depth = m == null ? 0 : m.getMaxDepth();
-        w.write(String.format("%s,%d,%d,%d,%d,%d\n",
-                algo, n, timeMs, depth, comps, allocs));
-        w.flush();
+
+    public void writeMetrics(String algo, int size, int comps, int allocs, int depth) {
+        pw.println(algo + "," + size + "," + comps + "," + allocs + "," + depth);
+        pw.flush();
     }
-    @Override public void close() throws IOException { w.close(); }
+
+    public void printCSV() {
+        System.out.println("See " + pw.toString());
+    }
+
+    public void close() {
+        pw.close();
+    }
 }
+
 
